@@ -153,11 +153,7 @@ def signup():
 @app.route('/users/<user_id>', methods=['GET'])
 @login_required
 def get_user(user_id):
-    # 認証されたユーザーと異なるuser_idの場合は403を返す
-    if g.current_user['user_id'] != user_id:
-        return jsonify({"message": "No permission for update"}), 403
-    
-    # DBから該当ユーザーを取得
+    # 認証は必須だが、他のユーザーの情報も取得可能
     db = get_db()
     user = db.execute(
         'SELECT user_id, nickname, comment FROM users WHERE user_id = ?',
