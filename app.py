@@ -61,10 +61,15 @@ def login_required(f):
             ).fetchone()
 
             if user is None:
+                # デバッグ: ユーザーの存在確認
+                print(f"[DEBUG] Auth failed for user_id: {user_id}")
+                exists = db.execute('SELECT user_id FROM users WHERE user_id = ?', (user_id,)).fetchone()
+                print(f"[DEBUG] User exists: {exists is not None}")
                 return jsonify({"message": "Authentication failed"}), 401
             
             g.current_user = user
-        except Exception:
+        except Exception as e:
+            print(f"[DEBUG] Auth exception: {e}")
             return jsonify({"message": "Authentication failed"}), 401
 
         return f(*args, **kwargs)
